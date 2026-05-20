@@ -1,0 +1,102 @@
+package com.stockstream.prediction;
+
+public class StockPrediction {
+    private String symbol;
+    private double currentPrice;
+    private double predictedPrice;
+    private double priceChange;
+    private double priceChangePct;
+    private double confidence;
+    private String signal;
+    private double rmse;
+    private int    dataPoints;
+    private String predictedAt;
+    private String modelUsed;          // NEW: which model won
+    private double lrPredictedPrice;   // NEW: Linear Regression prediction
+    private double rfPredictedPrice;   // NEW: Random Forest prediction
+    private double lrRmse;             // NEW: LR rmse
+    private double rfRmse;             // NEW: RF rmse
+
+    public StockPrediction() {}
+
+    public StockPrediction(String symbol, double currentPrice,
+                           double lrPredicted, double lrRmse,
+                           double rfPredicted, double rfRmse,
+                           int dataPoints, String predictedAt) {
+        this.symbol           = symbol;
+        this.currentPrice     = round(currentPrice);
+        this.lrPredictedPrice = round(lrPredicted);
+        this.rfPredictedPrice = round(rfPredicted);
+        this.lrRmse           = round(lrRmse);
+        this.rfRmse           = round(rfRmse);
+        this.dataPoints       = dataPoints;
+        this.predictedAt      = predictedAt;
+
+        // Pick the model with lower RMSE as the winner
+        if (lrRmse <= rfRmse) {
+            this.predictedPrice = round(lrPredicted);
+            this.rmse           = round(lrRmse);
+            this.modelUsed      = "LinearRegression";
+        } else {
+            this.predictedPrice = round(rfPredicted);
+            this.rmse           = round(rfRmse);
+            this.modelUsed      = "RandomForest";
+        }
+
+        this.priceChange    = round(this.predictedPrice - currentPrice);
+        this.priceChangePct = currentPrice > 0
+            ? round((this.predictedPrice - currentPrice) / currentPrice * 100) : 0;
+        this.confidence     = Math.max(0, Math.min(1, round(1.0 - (this.rmse / currentPrice))));
+        this.signal         = computeSignal(this.priceChangePct, this.confidence);
+    }
+
+    private String computeSignal(double changePct, double conf) {
+        if (conf < 0.4)       return "HOLD";
+        if (changePct >  0.5) return "BUY";
+        if (changePct < -0.5) return "SELL";
+        return "HOLD";
+    }
+
+    private double round(double v) { return Math.round(v * 10000.0) / 10000.0; }
+
+    public String getSymbol()            { return symbol; }
+    public void   setSymbol(String v)    { symbol = v; }
+    public double getCurrentPrice()      { return currentPrice; }
+    public void   setCurrentPrice(double v) { currentPrice = v; }
+    public double getPredictedPrice()    { return predictedPrice; }
+    public void   setPredictedPrice(double v) { predictedPrice = v; }
+    public double getPriceChange()       { return priceChange; }
+    public void   setPriceChange(double v) { priceChange = v; }
+    public double getPriceChangePct()    { return priceChangePct; }
+    public void   setPriceChangePct(double v) { priceChangePct = v; }
+    public double getConfidence()        { return confidence; }
+    public void   setConfidence(double v) { confidence = v; }
+    public String getSignal()            { return signal; }
+    public void   setSignal(String v)    { signal = v; }
+    public double getRmse()              { return rmse; }
+    public void   setRmse(double v)      { rmse = v; }
+    public int    getDataPoints()        { return dataPoints; }
+    public void   setDataPoints(int v)   { dataPoints = v; }
+    public String getPredictedAt()       { return predictedAt; }
+    public void   setPredictedAt(String v) { predictedAt = v; }
+    public String getModelUsed()         { return modelUsed; }
+    public void   setModelUsed(String v) { modelUsed = v; }
+    public double getLrPredictedPrice()  { return lrPredictedPrice; }
+    public void   setLrPredictedPrice(double v) { lrPredictedPrice = v; }
+    public double getRfPredictedPrice()  { return rfPredictedPrice; }
+    public void   setRfPredictedPrice(double v) { rfPredictedPrice = v; }
+    public double getLrRmse()            { return lrRmse; }
+    public void   setLrRmse(double v)    { lrRmse = v; }
+    public double getRfRmse()            { return rfRmse; }
+    public void   setRfRmse(double v)    { rfRmse = v; }
+
+    @Override public String toString() {
+        return String.format(
+            "StockPrediction{symbol='%s', current=%.4f, predicted=%.4f, " +
+            "change=%.2f%%, signal='%s', model='%s', conf=%.4f, rmse=%.4f, " +
+            "lr=%.4f(rmse=%.4f), rf=%.4f(rmse=%.4f)}",
+            symbol, currentPrice, predictedPrice, priceChangePct,
+            signal, modelUsed, confidence, rmse,
+            lrPredictedPrice, lrRmse, rfPredictedPrice, rfRmse);
+    }
+}

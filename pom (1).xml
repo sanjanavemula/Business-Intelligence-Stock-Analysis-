@@ -1,0 +1,61 @@
+package com.stockstream.dashboard;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Maps to the stock_latest table row returned by the REST API.
+ */
+public class StockLatest {
+
+    @JsonProperty("symbol")     private String symbol;
+    @JsonProperty("price")      private double price;
+    @JsonProperty("open_price") private double openPrice;
+    @JsonProperty("high_price") private double highPrice;
+    @JsonProperty("low_price")  private double lowPrice;
+    @JsonProperty("ma5")        private double ma5;
+    @JsonProperty("ma20")       private double ma20;
+    @JsonProperty("volatility") private double volatility;
+    @JsonProperty("trend")      private String trend;
+    @JsonProperty("change_pct") private double changePct;
+    @JsonProperty("volume")     private long   volume;
+    @JsonProperty("updated_at") private String updatedAt;
+
+    public StockLatest() {}
+
+    // ── Getters & setters ──────────────────────────────────────────────────────
+    public String getSymbol()     { return symbol; }
+    public void   setSymbol(String v)     { this.symbol = v; }
+
+    public double getPrice()      { return price; }
+    public void   setPrice(double v)      { this.price = v; }
+
+    public double getOpenPrice()  { return openPrice; }
+    public void   setOpenPrice(double v)  { this.openPrice = v; }
+
+    public double getHighPrice()  { return highPrice; }
+    public void   setHighPrice(double v)  { this.highPrice = v; }
+
+    public double getLowPrice()   { return lowPrice; }
+    public void   setLowPrice(double v)   { this.lowPrice = v; }
+
+    public double getMa5()        { return ma5; }
+    public void   setMa5(double v)        { this.ma5 = v; }
+
+    public double getMa20()       { return ma20; }
+    public void   setMa20(double v)       { this.ma20 = v; }
+
+    public double getVolatility() { return volatility; }
+    public void   setVolatility(double v) { this.volatility = v; }
+
+    public String getTrend()      { return trend; }
+    public void   setTrend(String v)      { this.trend = v; }
+
+    public double getChangePct()  { return changePct; }
+    public void   setChangePct(double v)  { this.changePct = v; }
+
+    public long   getVolume()     { return volume; }
+    public void   setVolume(long v)       { this.volume = v; }
+
+    public String getUpdatedAt()  { return updatedAt; }
+    public void   setUpdatedAt(String v)  { this.updatedAt = v; }
+}
